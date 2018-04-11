@@ -1,0 +1,39 @@
+ #include "SevSeg.h"
+byte numDigits = 4;
+byte digitPins[] = {2, 3, 4, 5};
+byte segmentPins[] = {8,9, 10, 11, 12, 13, 14};
+byte Hour=0,Min=0;
+SevSeg sevseg;
+ 
+
+void setup() {
+ //Instantiate a seven segment object
+sevseg.begin(COMMON_CATHODE, numDigits, digitPins,
+segmentPins);
+
+
+}
+
+void loop() {
+
+ static unsigned long timer = millis();
+  static int deciSeconds = 0,hour;
+  
+  if (millis() - timer >= 300) {
+    timer += 100;
+    deciSeconds++;
+    if(deciSeconds==60)
+    {
+      deciSeconds=0;
+      hour++;
+    }
+
+
+ if(hour==23)
+ hour=0;
+    sevseg.setNumber(hour*100+deciSeconds, 4);
+  }
+
+  sevseg.refreshDisplay(); // Must run repeatedly
+}
+
