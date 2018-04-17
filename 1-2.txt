@@ -1,0 +1,34 @@
+#include "SevSeg.h"
+SevSeg sevseg; //Instantiate a seven segment controller object
+byte sw=digitalRead(6);
+void setup() {
+  byte numDigits = 4;   
+  byte digitPins[] = {2,3,4,5};
+  byte segmentPins[] = {8, 9, 10, 11, 12, 13,14,15};
+  bool resistorsOnSegments = false; 
+  byte hardwareConfig = COMMON_CATHODE; 
+  sevseg.begin(hardwareConfig, numDigits, digitPins, segmentPins, resistorsOnSegments);
+  sevseg.setBrightness(90);
+}
+
+void loop() {
+  static unsigned long timer = millis();
+  static int deciSeconds = 0;
+  sevseg.setNumber(deciSeconds, 3);
+  if(sw){
+  if (millis() - timer >=50) {
+    deciSeconds++; 
+    timer += 50; 
+     if (deciSeconds%100 == 59)  
+      deciSeconds+=41;
+      else
+      deciSeconds+=1;
+    
+    if (deciSeconds == 2400) 
+      deciSeconds=0;
+  } 
+  }
+  else
+  sevseg.setNumber(0000, 3);
+sevseg.refreshDisplay(); // Must run repeatedly
+}
